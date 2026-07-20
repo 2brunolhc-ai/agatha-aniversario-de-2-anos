@@ -18,9 +18,9 @@ export type RSVPFormValues = {
   fullName: string;
   attendanceStatus: AttendanceStatus | "";
   hasCompanions: YesNoChoice | "";
-  companionCount: number;
+  companionCount: number | "";
   hasChildren: YesNoChoice | "";
-  children: number;
+  children: number | "";
   companionNames: string;
   message: string;
   website: string;

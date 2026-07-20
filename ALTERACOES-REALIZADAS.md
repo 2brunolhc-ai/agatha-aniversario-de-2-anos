@@ -32,3 +32,11 @@
 - Adicionado um card logo após a abertura do convite.
 - Ao tocar no card, a página rola suavemente até a seção de localização.
 - O atalho foi adaptado para celular e não abre o mapa imediatamente; ele leva primeiro ao endereço, Google Maps e Waze.
+
+## Correção do campo de quantidade de crianças
+
+- O campo agora inicia vazio, exibindo `1` apenas como exemplo em cinza.
+- Digitar `2` grava `2`, sem concatenar com um valor pré-preenchido.
+- O Backspace agora consegue apagar completamente o campo.
+- A mesma melhoria foi aplicada ao campo de quantidade de acompanhantes.
+- As validações e os limites de quantidade foram mantidos.

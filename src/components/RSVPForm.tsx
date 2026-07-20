@@ -10,9 +10,9 @@ const initialValues: RSVPFormValues = {
   fullName: "",
   attendanceStatus: "",
   hasCompanions: "",
-  companionCount: 1,
+  companionCount: "",
   hasChildren: "",
-  children: 1,
+  children: "",
   companionNames: "",
   message: "",
   website: "",
@@ -30,8 +30,9 @@ export function RSVPForm() {
   const attending = values.attendanceStatus === "yes";
   const bringingCompanions = attending && values.hasCompanions === "yes";
   const bringingChildren = bringingCompanions && values.hasChildren === "yes";
-  const companionCount = bringingCompanions ? values.companionCount : 0;
-  const children = bringingChildren ? values.children : 0;
+  const companionCount = bringingCompanions && values.companionCount !== "" ? values.companionCount : 0;
+  const children = bringingChildren && values.children !== "" ? values.children : 0;
+  const childrenLimit = companionCount > 0 ? companionCount : 19;
   const totalGuests = attending ? 1 + companionCount : 0;
   const adults = attending ? totalGuests - children : 0;
 
@@ -52,7 +53,7 @@ export function RSVPForm() {
       ...current,
       attendanceStatus: status,
       ...(status === "no"
-        ? { hasCompanions: "", companionCount: 1, hasChildren: "", children: 1, companionNames: "" }
+        ? { hasCompanions: "", companionCount: "", hasChildren: "", children: "", companionNames: "" }
         : {}),
     }));
   }
@@ -61,12 +62,12 @@ export function RSVPForm() {
     setValues((current) => ({
       ...current,
       hasCompanions: choice,
-      ...(choice === "no" ? { companionCount: 1, hasChildren: "", children: 1, companionNames: "" } : {}),
+      ...(choice === "no" ? { companionCount: "", hasChildren: "", children: "", companionNames: "" } : {}),
     }));
   }
 
   function chooseChildren(choice: "yes" | "no") {
-    setValues((current) => ({ ...current, hasChildren: choice, ...(choice === "no" ? { children: 1 } : {}) }));
+    setValues((current) => ({ ...current, hasChildren: choice, children: "" }));
   }
 
   function validate() {
@@ -209,7 +210,11 @@ export function RSVPForm() {
                           min={1}
                           max={19}
                           value={values.companionCount}
-                          onChange={(event) => update("companionCount", Math.min(19, Math.max(1, Number(event.target.value) || 1)))}
+                          placeholder="1"
+                          onChange={(event) => {
+                            const rawValue = event.target.value;
+                            update("companionCount", rawValue === "" ? "" : Math.min(19, Math.max(1, Number.parseInt(rawValue, 10) || 1)));
+                          }}
                         />
                         <small>Não inclua você nessa quantidade.</small>
                       </label>
@@ -236,9 +241,13 @@ export function RSVPForm() {
                             type="number"
                             inputMode="numeric"
                             min={1}
-                            max={companionCount}
+                            max={childrenLimit}
                             value={values.children}
-                            onChange={(event) => update("children", Math.max(1, Number(event.target.value) || 1))}
+                            placeholder="1"
+                            onChange={(event) => {
+                              const rawValue = event.target.value;
+                              update("children", rawValue === "" ? "" : Math.min(childrenLimit, Math.max(1, Number.parseInt(rawValue, 10) || 1)));
+                            }}
                             aria-describedby="children-help"
                           />
                           <small id="children-help">As crianças já fazem parte dos acompanhantes e não serão somadas novamente.</small>
